@@ -1,0 +1,78 @@
+# PathGuard v3.0 — full stack via Docker Compose.
+#
+#   mongo      MongoDB 7 with a named volume.
+#   server     Node/Express API (server/Dockerfile).
+#   analytics  Python FastAPI spatial-stats service (analytics/Dockerfile).
+#   client     Built React app served by nginx (client/Dockerfile).
+#
+# Single command:  docker compose up --build
+# See docs/DEPLOY_FOR_YOUR_CITY.md for environment-variable details.
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    expose:
+      - "27017"
+
+  analytics:
+    build:
+      context: ./analytics
+    restart: unless-stopped
+    expose:
+      - "8000"
+
+  server:
+    build:
+      context: ./server
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 5000
+      MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017/pathguard}
+      JWT_SECRET: ${JWT_SECRET:-change_me_in_production}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:8080}
+      ANALYTICS_URL: http://analytics:8000
+      MAX_FILE_SIZE_MB: ${MAX_FILE_SIZE_MB:-5}
+      ADMIN_EMAILS: ${ADMIN_EMAILS:-}
+      # Route planner — optional Overpass endpoint override (comma-separated).
+      OVERPASS_URL: ${OVERPASS_URL:-}
+      # Module 3 — disabled by default; see docs/DEPLOY_MODULE_3.md.
+      MODULE_3_ENABLED: ${MODULE_3_ENABLED:-true}
+      MODULE_3_IMAGES_ENABLED: ${MODULE_3_IMAGES_ENABLED:-false}
+      MODULE_3_SUPPORT_SERVICES_CONFIG_PATH: ${MODULE_3_SUPPORT_SERVICES_CONFIG_PATH:-}
+      MODULE_3_CRISIS_KEYWORDS_PATH: ${MODULE_3_CRISIS_KEYWORDS_PATH:-}
+      MODULE_3_AUDIT_LOG_PATH: ${MODULE_3_AUDIT_LOG_PATH:-}
+    depends_on:
+      - mongo
+      - analytics
+    volumes:
+      - server_uploads:/app/uploads
+    expose:
+      - "5000"
+
+  client:
+    build:
+      context: ./client
+      args:
+        VITE_API_URL: ${VITE_API_URL:-}
+        VITE_CITY_NAME: ${VITE_CITY_NAME:-Mumbai}
+        VITE_CITY_LAT: ${VITE_CITY_LAT:-19.076}
+        VITE_CITY_LNG: ${VITE_CITY_LNG:-72.8777}
+        VITE_CITY_ZOOM: ${VITE_CITY_ZOOM:-12}
+        VITE_CITY_LOCALE: ${VITE_CITY_LOCALE:-en}
+        VITE_CITY_OSM_BBOX: ${VITE_CITY_OSM_BBOX:-}
+        VITE_MODULE3_ENABLED: ${VITE_MODULE3_ENABLED:-true}
+        VITE_MODULE3_QUICK_EXIT_URL: ${VITE_MODULE3_QUICK_EXIT_URL:-}
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - "${CLIENT_PORT:-8080}:80"
+
+volumes:
+  mongo_data:
+  server_uploads:

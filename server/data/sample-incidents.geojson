@@ -1,0 +1,88 @@
+{
+  "type": "FeatureCollection",
+  "name": "alertcycle_sample_incidents",
+  "metadata": {
+    "description": "Anonymized multi-modal road safety incident sample (synthetic).",
+    "license": "CC-BY-4.0",
+    "generator": "AlertCycle seed",
+    "spatialKAnonymity": "coordinates rounded to 3 decimals (~110m)",
+    "temporalNormalization": "date only (UTC)"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [72.879, 19.078] },
+      "properties": {
+        "type": "unsafe_crossing",
+        "severity": "moderate",
+        "mobilityMode": "pedestrian",
+        "tripPurpose": "commute",
+        "weather": "clear",
+        "lighting": "daylight",
+        "crossingType": "zebra",
+        "schoolZone": false,
+        "date": "2025-06-12"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [72.881, 19.072] },
+      "properties": {
+        "type": "collision",
+        "severity": "major",
+        "mobilityMode": "cyclist",
+        "tripPurpose": "commute",
+        "weather": "rain",
+        "lighting": "dusk",
+        "roadType": "arterial",
+        "schoolZone": false,
+        "date": "2025-07-04"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [72.875, 19.080] },
+      "properties": {
+        "type": "accessibility_issue",
+        "severity": "minor",
+        "mobilityMode": "wheelchair",
+        "tripPurpose": "errands",
+        "weather": "clear",
+        "lighting": "daylight",
+        "roadType": "footpath",
+        "schoolZone": false,
+        "date": "2025-08-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [72.883, 19.075] },
+      "properties": {
+        "type": "speeding_vehicles",
+        "severity": "moderate",
+        "mobilityMode": "runner",
+        "tripPurpose": "exercise",
+        "weather": "clear",
+        "lighting": "dawn",
+        "roadType": "residential",
+        "schoolZone": true,
+        "date": "2025-09-10"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [72.872, 19.069] },
+      "properties": {
+        "type": "near_miss",
+        "severity": "minor",
+        "mobilityMode": "escooter",
+        "tripPurpose": "leisure",
+        "weather": "clear",
+        "lighting": "daylight",
+        "roadType": "shared_path",
+        "schoolZone": false,
+        "date": "2025-10-22"
+      }
+    }
+  ]
+}

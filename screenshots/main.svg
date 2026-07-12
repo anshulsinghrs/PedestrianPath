@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e6f4ea"/>
+      <stop offset="1" stop-color="#c7e8d0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1200" height="56" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="24" y="36" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#16a34a">🚴 BikeMaps</text>
+  <rect x="980" y="14" width="170" height="32" rx="6" fill="#16a34a"/>
+  <text x="1065" y="35" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" fill="#ffffff">+ Report incident</text>
+  <rect x="0" y="56" width="320" height="644" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="24" y="92" font-family="system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#6b7280">FILTERS</text>
+  <text x="24" y="130" font-family="system-ui,-apple-system,sans-serif" font-size="12" fill="#6b7280">INCIDENT TYPE</text>
+  <circle cx="40" cy="160" r="6" fill="#dc2626"/><text x="56" y="164" font-family="system-ui,-apple-system,sans-serif" font-size="14" fill="#111827">💥 Collision</text>
+  <circle cx="40" cy="190" r="6" fill="#f59e0b"/><text x="56" y="194" font-family="system-ui,-apple-system,sans-serif" font-size="14" fill="#111827">⚠ Near miss</text>
+  <circle cx="40" cy="220" r="6" fill="#3b82f6"/><text x="56" y="224" font-family="system-ui,-apple-system,sans-serif" font-size="14" fill="#111827">🚧 Hazard</text>
+  <circle cx="40" cy="250" r="6" fill="#7c3aed"/><text x="56" y="254" font-family="system-ui,-apple-system,sans-serif" font-size="14" fill="#111827">🔒 Theft</text>
+  <text x="24" y="300" font-family="system-ui,-apple-system,sans-serif" font-size="12" fill="#6b7280">DATE RANGE</text>
+  <rect x="24" y="316" width="272" height="36" rx="6" fill="#f7f9fc" stroke="#e5e7eb"/>
+  <rect x="24" y="362" width="272" height="36" rx="6" fill="#f7f9fc" stroke="#e5e7eb"/>
+  <g>
+    <circle cx="520" cy="280" r="18" fill="#dc2626" stroke="#fff" stroke-width="3"/><text x="520" y="286" text-anchor="middle" font-size="14">💥</text>
+    <circle cx="650" cy="380" r="18" fill="#f59e0b" stroke="#fff" stroke-width="3"/><text x="650" y="386" text-anchor="middle" font-size="14">⚠</text>
+    <circle cx="780" cy="320" r="18" fill="#3b82f6" stroke="#fff" stroke-width="3"/><text x="780" y="326" text-anchor="middle" font-size="14">🚧</text>
+    <circle cx="900" cy="450" r="18" fill="#7c3aed" stroke="#fff" stroke-width="3"/><text x="900" y="456" text-anchor="middle" font-size="14">🔒</text>
+    <circle cx="600" cy="500" r="22" fill="#16a34a" stroke="#fff" stroke-width="3"/><text x="600" y="507" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">12</text>
+  </g>
+  <text x="760" y="660" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="13" fill="#6b7280">Replace with a real screenshot once you’ve run the app</text>
+</svg>

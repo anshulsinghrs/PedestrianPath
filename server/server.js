@@ -19,6 +19,7 @@ const infrastructureRoutes = require('./routes/infrastructure');
 const configRoutes = require('./routes/config');
 const routeRoutes = require('./routes/routes');
 const walkabilityRoutes = require('./routes/walkability');
+const visionRoutes = require('./routes/vision');
 const errorHandler = require('./middleware/errorHandler');
 
 // ---------------------------------------------------------------------------
@@ -161,6 +162,7 @@ app.use('/api/config', configRoutes);
 // Pedestrian Mobility Platform additions — walkability engine + router.
 app.use('/api/routes', routeRoutes);
 app.use('/api/walkability', walkabilityRoutes);
+app.use('/api/vision', visionRoutes);
 
 app.use('/api/v4/auth', authRoutes);
 app.use('/api/v4/incidents', incidentRoutes);
@@ -168,6 +170,7 @@ app.use('/api/v4/infrastructure', infrastructureRoutes);
 app.use('/api/v4/config', configRoutes);
 app.use('/api/v4/routes', routeRoutes);
 app.use('/api/v4/walkability', walkabilityRoutes);
+app.use('/api/v4/vision', visionRoutes);
 
 // Aliased analytics endpoints under /api/analytics (see docs/API.md).
 const incidentCtrl = require('./controllers/incidentController');

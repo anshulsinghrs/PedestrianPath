@@ -2625,3 +2625,30 @@ details.fieldset[open] summary::before {
 @media (max-width: 640px) {
   .route-planner { width: calc(100vw - 24px); max-height: 60%; }
 }
+
+/* AI image-analysis panel in the incident detail view */
+.detail-ai {
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+}
+.detail-ai-provider { font-weight: 400; color: var(--color-text-muted); text-transform: none; }
+.detail-ai-caption { margin: 6px 0; font-size: 0.85rem; color: var(--color-text); }
+.detail-ai-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.detail-ai-tag {
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(124, 58, 237, 0.12);
+  color: #7c3aed;
+  text-transform: capitalize;
+}
+.detail-ai-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}

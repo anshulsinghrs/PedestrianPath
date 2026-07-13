@@ -601,6 +601,9 @@ const incidentSchema = new mongoose.Schema(
     imageUrl: { type: String, trim: true },
     thumbnailUrl: { type: String, trim: true },
     videoUrl: { type: String, trim: true },
+    // AI image-analysis predictions (services/vision). Best-effort; never
+    // stored for personal-safety reports (no images there — see pre-save).
+    aiAnalysis: { type: mongoose.Schema.Types.Mixed, default: null },
 
     // ----- Infrastructure linkage -----
     linkedInfrastructure: [
@@ -660,6 +663,7 @@ incidentSchema.pre('save', function (next) {
     this.imageUrl = undefined;
     this.thumbnailUrl = undefined;
     this.videoUrl = undefined;
+    this.aiAnalysis = null;
   }
 
   this.nearMissOnly =

@@ -362,9 +362,51 @@ export default function IncidentDetail({ incident, onClose }) {
             className="detail-image"
           />
         )}
+        {incident.aiAnalysis && !isM3 && (
+          <AiAnalysisPanel analysis={incident.aiAnalysis} />
+        )}
         <div className="detail-meta">
           Reported {new Date(incident.createdAt).toLocaleDateString()}
         </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Renders the AI image-analysis predictions stored with a hazard report
+ * (services/vision). Shows detected features, the auto-generated caption,
+ * and the suggested severity.
+ */
+function AiAnalysisPanel({ analysis }) {
+  const det = analysis.detections || {};
+  const detected = Object.entries(det)
+    .filter(([key, v]) =>
+      key === 'lighting' ? v?.level && v.level !== 'unknown' : v?.present
+    )
+    .map(([key, v]) => (key === 'lighting' ? `${v.level} lighting` : key));
+
+  return (
+    <div className="detail-ai">
+      <span className="detail-label">
+        🤖 AI analysis
+        <span className="detail-ai-provider"> · {analysis.provider}</span>
+      </span>
+      {analysis.description && <p className="detail-ai-caption">{analysis.description}</p>}
+      {detected.length > 0 && (
+        <div className="detail-ai-tags">
+          {detected.map((d) => (
+            <span key={d} className="detail-ai-tag">{d}</span>
+          ))}
+        </div>
+      )}
+      <div className="detail-ai-meta">
+        {analysis.walkabilityEstimate != null && (
+          <span>Walkability ≈ {analysis.walkabilityEstimate}/100</span>
+        )}
+        {analysis.suggestedSeverity && (
+          <span>Suggested severity: <strong>{analysis.suggestedSeverity}</strong></span>
+        )}
       </div>
     </div>
   );

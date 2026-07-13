@@ -40,6 +40,12 @@ services:
       ADMIN_EMAILS: ${ADMIN_EMAILS:-}
       # Route planner — optional Overpass endpoint override (comma-separated).
       OVERPASS_URL: ${OVERPASS_URL:-}
+      # AI image analysis — vision provider + keys (see docs/VISION.md).
+      VISION_PROVIDER: ${VISION_PROVIDER:-heuristic}
+      VISION_MODEL: ${VISION_MODEL:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       # Module 3 — disabled by default; see docs/DEPLOY_MODULE_3.md.
       MODULE_3_ENABLED: ${MODULE_3_ENABLED:-true}
       MODULE_3_IMAGES_ENABLED: ${MODULE_3_IMAGES_ENABLED:-false}

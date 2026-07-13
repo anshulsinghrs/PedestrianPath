@@ -13,6 +13,8 @@ router.get('/', (_req, res) => {
       walkabilityEngine: true,
       incidentReporting: true,
       analytics: true,
+      imageAnalysis: true,
+      visionProvider: process.env.VISION_PROVIDER || 'heuristic',
     },
   });
 });

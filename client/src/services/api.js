@@ -150,6 +150,20 @@ export const planRoutes = (body) =>
 export const fetchRouteProfiles = () =>
   api.get('/routes/profiles').then((r) => r.data);
 
+// ----- AI image analysis (Vision-Language Models) -----
+export const fetchVisionStatus = () =>
+  api.get('/vision/status').then((r) => r.data);
+export const analyzeReportImage = (file, provider) => {
+  const fd = new FormData();
+  fd.append('image', file);
+  if (provider) fd.append('provider', provider);
+  return api
+    .post('/vision/analyze', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    .then((r) => r.data);
+};
+
 // ----- Walkability engine -----
 export const fetchWalkabilityWeights = () =>
   api.get('/walkability/weights').then((r) => r.data);

@@ -405,6 +405,9 @@ reporting API above. These endpoints are also aliased under `/api/v4/*`.
 | `GET`  | `/api/walkability/weights` | Indicator weights + colour scale |
 | `POST` | `/api/walkability/score` | Score a segment from OSM tags or indicators |
 | `GET`  | `/api/walkability/heatmap` | Walkability heatmap (GeoJSON FeatureCollection) |
+| `POST` | `/api/vision/analyze` | AI image analysis (multipart `image` or JSON `imageUrl`) |
+| `GET`  | `/api/vision/status` | Active + configured vision providers |
 
 Full request/response shapes, the routing cost model, and offline usage are
-documented in [`ROUTING.md`](ROUTING.md).
+documented in [`ROUTING.md`](ROUTING.md); the modular AI image-analysis service
+(providers, prediction schema, persistence) in [`VISION.md`](VISION.md).

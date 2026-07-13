@@ -4,6 +4,23 @@ const analyticsClient = require('../services/analyticsClient');
 const { applyKAnonymity } = require('../services/privacy');
 const { detectPii } = require('../services/piiDetection');
 const { detectCrisis } = require('../services/crisisDetection');
+const vision = require('../services/vision');
+
+/**
+ * Best-effort AI analysis of an uploaded report image. Never throws — image
+ * analysis is enrichment and must not block a report submission.
+ */
+async function analyzeReportImage(req) {
+  if (!req.file?.path) return null;
+  try {
+    return await vision.analyzeImage({
+      path: req.file.path,
+      mimeType: req.file.mimetype,
+    });
+  } catch {
+    return null;
+  }
+}
 
 /* ----------------------------------------------------------------------- */
 /*  Reads                                                                  */
@@ -213,6 +230,8 @@ exports.createHazardInfrastructure = async (req, res, next) => {
       ),
     };
     payload.riskScore = await computeRiskScoreAsync(payload);
+    // AI image analysis (best-effort) — stored alongside the report.
+    payload.aiAnalysis = await analyzeReportImage(req);
 
     const incident = await Incident.create(payload);
     req.app.get('io')?.emit('incident:new', { module: 'hazard_infrastructure', id: incident._id });

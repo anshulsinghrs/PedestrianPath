@@ -49,7 +49,15 @@ Crowdsourced reports from the reporting platform become **routing penalties** �
 a fatal personal-safety report near a segment makes the router prefer an
 alternative. A walkability heatmap layer colours the network by score.
 
-### 4. Everything PathGuard already did
+### 4. AI image analysis (modular VLM service)
+Report photos are analysed by a **provider-agnostic vision service** — swap
+between Claude, GPT-4o, Gemini or a no-key heuristic default with one env var
+(`VISION_PROVIDER`), no business-logic change. It detects sidewalk /
+obstruction / crossing / pothole / encroachment, estimates lighting and
+walkability, writes an auto-caption, and suggests a severity — stored on the
+report and shown in its detail view. See [`docs/VISION.md`](docs/VISION.md).
+
+### 5. Everything PathGuard already did
 Three-module incident reporting (accident/conflict, hazard/infrastructure,
 personal-safety with elevated privacy), JWT auth, admin dashboard, spatial
 analytics (KDE / Getis-Ord hotspots), OSM infrastructure import, real-time
@@ -150,6 +158,8 @@ tab, pick a start + destination, and hit **Find best routes**.
 | `GET`  | `/api/walkability/weights` | Default indicator weights + colour scale |
 | `POST` | `/api/walkability/score` | Score a segment from OSM tags or indicators |
 | `GET`  | `/api/walkability/heatmap` | Walkability heatmap (GeoJSON) for the map |
+| `POST` | `/api/vision/analyze` | AI image analysis of a report photo (multipart or `imageUrl`) |
+| `GET`  | `/api/vision/status` | Active + configured vision providers |
 
 `POST /api/routes/plan` request:
 
@@ -170,7 +180,7 @@ existing reporting API in [`docs/API.md`](docs/API.md).
 ## 🧪 Tests
 
 ```bash
-cd server && npm test          # 46 tests incl. 19 for walkability + routing
+cd server && npm test          # 53 tests incl. walkability, routing & vision
 cd client && npm run build     # production bundle
 ```
 
@@ -185,6 +195,7 @@ run with no database and no network.
 |-----|----------|
 | [`docs/INTEGRATION.md`](docs/INTEGRATION.md) | How the two repos were merged; what came from where; design decisions |
 | [`docs/ROUTING.md`](docs/ROUTING.md) | Walkability engine + routing engine deep-dive, cost model, API |
+| [`docs/VISION.md`](docs/VISION.md) | Modular AI image-analysis service — providers, schema, API |
 | [`docs/PATHGUARD_REPORTING.md`](docs/PATHGUARD_REPORTING.md) | Full reporting-platform manual (original PathGuard README) |
 | [`docs/API.md`](docs/API.md) | REST API reference |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | System architecture & deployment |
@@ -198,7 +209,6 @@ The unified foundation is production-ready for routing, walkability scoring,
 reporting, analytics and deployment. Larger spec items intentionally left as
 clearly-scoped next steps:
 
-- **VLM image analysis** of uploaded report photos (modular provider service).
 - **Government dashboard** PDF/GIS-layer export and department assignment.
 - **AI recommendation engine** ("install crossing here, +X walkability").
 - **PostGIS migration** for pre-baked segment scoring at city scale (the

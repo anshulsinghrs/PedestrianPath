@@ -1,0 +1,144 @@
+# Render Blueprint — fully payment-free configuration.
+#
+# What this provisions:
+#   - pathguard-api        : Node/Express on Render Free  (web service)
+#   - pathguard-analytics  : Python/FastAPI on Render Free (web service)
+#
+# Free-tier trade-offs you should know about:
+#
+#   1. Services SLEEP after 15 minutes of inactivity. Next request
+#      cold-starts the container (~30-60 s). The BackendStatusBanner
+#      on the frontend surfaces this to users automatically.
+#
+#   2. NO persistent disks on Free. Anything written to the container
+#      filesystem (e.g. image / video uploads under server/uploads)
+#      will be LOST on every redeploy or restart. Module 3 already
+#      writes nothing; Modules 1 + 2 image/video evidence is the only
+#      thing affected. See docs/DEPLOYMENT.md §5 for how to migrate to
+#      Cloudinary / S3 (free tier) or upgrade to a paid Render disk.
+#
+#   3. NO private services (`type: pserv`) on Free. The analytics
+#      service is therefore a public web service. It has no DB
+#      connection, no auth state, and only does maths on
+#      already-aggregated points — it is safe to be publicly
+#      reachable. If you upgrade to a paid plan later you can flip it
+#      back to `type: pserv` for defence-in-depth.
+#
+#   4. Render Free has a soft cap of ~750 instance-hours/month per
+#      service. Two services running 24/7 fit within the free quota
+#      because they sleep so often.
+#
+# What's NOT provisioned here (you provide them separately):
+#   - MongoDB     : use MongoDB Atlas Free (M0). See docs/DEPLOYMENT.md §2.
+#   - Frontend    : built by GitHub Actions and hosted on GitHub Pages.
+#
+# After Render imports this blueprint it will prompt you for every env
+# var marked `sync: false`. Nothing in here requires a credit card.
+
+services:
+  # ----------------------------------------------------------------------
+  # Node / Express API — public web service
+  # ----------------------------------------------------------------------
+  - type: web
+    name: pathguard-api
+    runtime: node
+    plan: free                # Render Free; no credit card required.
+    region: oregon            # change if your participants are elsewhere
+    rootDir: server
+    buildCommand: npm ci --omit=dev
+    startCommand: node server.js
+    autoDeploy: true          # redeploy on every push to main
+    # Liveness probe: /api/health returns 200 whenever the process is up,
+    # independent of MongoDB. This keeps the service in rotation during a
+    # transient DB outage (e.g. an Atlas allowlist hiccup) instead of pulling
+    # it entirely and presenting as "backend unreachable". Use
+    # /api/health/ready (503 when the DB is down) for readiness gating.
+    healthCheckPath: /api/health
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+
+      # MongoDB Atlas connection string. Format:
+      #   mongodb+srv://USER:PASS@cluster.mongodb.net/pathguard?retryWrites=true&w=majority
+      # In Atlas, allow Network Access from 0.0.0.0/0 (Render Free does
+      # not give you static outbound IPs).
+      - key: MONGO_URI
+        sync: false
+
+      # JWT signing secret. `generateValue: true` produces a 256-bit
+      # random string the first time you apply this blueprint — you
+      # never have to see it or set it manually.
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+
+      # CORS — comma-separated list of allowed origins. Must contain the
+      # exact origin your frontend is served from, or the browser blocks
+      # every request and the app shows "backend unreachable" even though
+      # the API is healthy. Includes the Vercel deployment and the GitHub
+      # Pages URL of `anshulsinghrs/urban_mobility`; replace with your own
+      # frontend origin (or custom domain) when you fork.
+      #
+      # NOTE: if this service already has CLIENT_URL set in the Render
+      # dashboard, that value wins — update it there too (Environment tab).
+      # For Vercel preview deployments you can add a name-pinned wildcard
+      # such as `https://*.vercel.app` (see matchesOrigin in server.js).
+      - key: CLIENT_URL
+        value: https://urban-mobility-ecru.vercel.app,https://anshulsinghrs.github.io,http://localhost:8080,http://localhost:5173
+
+      - key: MAX_FILE_SIZE_MB
+        value: 5
+      - key: MAX_VIDEO_FILE_SIZE_MB
+        value: 25
+
+      # Comma-separated admin emails (for Module 3 raw reads). Optional.
+      - key: ADMIN_EMAILS
+        sync: false
+
+      # ----- Module 3 (Personal Safety) -----
+      # Disabled by default. Set MODULE_3_ENABLED=true ONLY after working
+      # through docs/MODULE_3_DEPLOYMENT_CHECKLIST.md (IRB approval,
+      # support-services registry, locale-specific PII rules).
+      - key: MODULE_3_ENABLED
+        value: false
+      - key: MODULE_3_IMAGES_ENABLED
+        value: false
+
+      # The analytics service runs as a sibling web service on Render
+      # Free. We address it by its public Render URL because Free-tier
+      # services don't have access to the private network.
+      # IMPORTANT: after Render assigns the analytics service its actual
+      # hostname, update this value in the Render dashboard (it will be
+      # the URL shown for `pathguard-analytics`).
+      - key: ANALYTICS_URL
+        value: https://pathguard-analytics.onrender.com
+
+  # ----------------------------------------------------------------------
+  # Python / FastAPI spatial-stats service — public web service on Free.
+  # No DB, no auth, no user data — only receives anonymous point arrays
+  # and returns aggregated GeoJSON. Safe to expose publicly on Free; if
+  # you later move to a paid Render plan you can flip `type: web` back
+  # to `type: pserv` so it only listens on the internal network.
+  #
+  # NOTE: We use Docker runtime (not Render's native Python builder)
+  # because the deps tree (numpy / scipy / scikit-learn / shapely /
+  # libpysal / esda) needs build-essential to compile any wheels pip
+  # can't find pre-built. The Dockerfile in analytics/ already installs
+  # build-essential and binds uvicorn to $PORT.
+  # ----------------------------------------------------------------------
+  - type: web
+    name: pathguard-analytics
+    runtime: docker
+    plan: free
+    region: oregon
+    rootDir: analytics
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"

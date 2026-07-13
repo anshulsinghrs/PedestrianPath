@@ -1,0 +1,87 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        working-directory: ./client
+        run: npm install
+
+      - name: Verify VITE_API_URL is set
+        # Warn (don't hard-fail) when the secret is missing. The frontend
+        # also supports a runtime override via public/config.js, so a
+        # missing secret no longer guarantees a broken deploy — but it's
+        # still the supported path and worth flagging loudly.
+        run: |
+          if [ -z "${{ secrets.VITE_API_URL }}" ]; then
+            echo "::warning::VITE_API_URL secret is not set."
+            echo "Either add the Render backend URL at:"
+            echo "  Settings → Secrets and variables → Actions → New repository secret"
+            echo "  Name:  VITE_API_URL"
+            echo "  Value: https://<your-render-service>.onrender.com"
+            echo "or edit client/public/config.js (or dist/config.js post-deploy)"
+            echo "to set window.__PATHGUARD_CONFIG__.apiUrl."
+          fi
+
+      - name: Build React app
+        working-directory: ./client
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_MODULE3_ENABLED: ${{ vars.VITE_MODULE3_ENABLED || 'true' }}
+          VITE_CITY_NAME: ${{ vars.VITE_CITY_NAME }}
+          VITE_CITY_LAT: ${{ vars.VITE_CITY_LAT }}
+          VITE_CITY_LNG: ${{ vars.VITE_CITY_LNG }}
+          VITE_CITY_ZOOM: ${{ vars.VITE_CITY_ZOOM }}
+        run: npm run build
+
+      - name: Write runtime config
+        # Overwrite the static config.js shipped under dist/ with the
+        # secret's value. This means the API URL lives in a small,
+        # post-deploy-editable file rather than only inside a hashed JS
+        # chunk, so rotating the backend URL doesn't require a rebuild.
+        # JSON-encoding the URL via `jq -Rn` avoids any quote-escaping
+        # surprises if the secret ever contains unusual characters.
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+        run: |
+          API_URL_JSON=$(printf '%s' "${VITE_API_URL}" | jq -Rs .)
+          {
+            echo "window.__PATHGUARD_CONFIG__ = {"
+            echo "  apiUrl: ${API_URL_JSON},"
+            echo "};"
+          } > ./client/dist/config.js
+          echo "Wrote dist/config.js (apiUrl set: $([ -n "${VITE_API_URL}" ] && echo yes || echo no))"
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './client/dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true

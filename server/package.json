@@ -1,0 +1,49 @@
+{
+  "name": "pathguard-server",
+  "version": "4.0.0",
+  "description": "PathGuard backend — participatory urban safety intelligence infrastructure: accident/conflict, hazard/infrastructure, and personal-safety reporting.",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0 <21.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node seed.js",
+    "test": "node --test test/*.test.js",
+    "migrate:v3": "node scripts/migrate-to-v3-modules.js",
+    "migrate:v4": "node scripts/migrate-to-v4-schema.js",
+    "import:osm": "node scripts/import-osm-infrastructure.js"
+  },
+  "keywords": [
+    "alertcycle",
+    "road-safety",
+    "vulnerable-road-users",
+    "pedestrian-safety",
+    "cycling-safety",
+    "accessibility",
+    "smart-city",
+    "vision-zero",
+    "express",
+    "mongodb"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "express-validator": "^7.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.5.1",
+    "morgan": "^1.10.0",
+    "multer": "^2.0.1",
+    "sharp": "^0.33.5",
+    "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+title: "PathGuard: an open, multi-modal, infrastructure-linked, privacy-respecting research platform for vulnerable-road-user safety"
+message: "If you use this software, please cite the accompanying paper and the Zenodo release of the version you used."
+type: software
+authors:
+  - family-names: "Singh"
+    given-names: "Anshul"
+    affiliation: "Indian Institute of Technology Kharagpur"
+repository-code: "https://github.com/anshulsinghrs/pathguard"
+url: "https://github.com/anshulsinghrs/pathguard"
+license: MIT
+version: "3.0.0"
+date-released: "2026-05-11"
+keywords:
+  - vulnerable road users
+  - road safety
+  - urban mobility
+  - participatory mapping
+  - k-anonymity
+  - OpenStreetMap
+  - vision zero
+  - smart cities
+preferred-citation:
+  type: article
+  title: "PathGuard: an interaction-centric, infrastructure-linked, privacy-respecting research platform for vulnerable-road-user safety (Modules 1 & 2)"
+  authors:
+    - family-names: "Singh"
+      given-names: "Anshul"
+  journal: "Computers, Environment and Urban Systems"
+  year: 2026
+  notes: "Module 1 (accident/conflict) and Module 2 (hazard/infrastructure) paper. Preprint and DOI to be added on acceptance."
+references:
+  - type: article
+    title: "Personal-safety reporting in PathGuard: a safeguarded participatory module for harassment and unsafe-environment data (Module 3)"
+    authors:
+      - family-names: "Singh"
+        given-names: "Anshul"
+    year: 2026
+    notes: "Module 3 paper. Will be released only after the IRB process and a gender-balanced participatory-design review are complete."
+identifiers:
+  - type: doi
+    value: "10.0000/zenodo.placeholder"
+    description: "Zenodo archive of the v3.0 software release (placeholder; replace with the real DOI after publication)."

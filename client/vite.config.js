@@ -8,7 +8,7 @@ import react from '@vitejs/plugin-react';
 const isVercel = process.env.VERCEL === '1';
 
 export default defineConfig({
-  base: isVercel ? '/' : '/urban_mobility/',
+  base: isVercel ? '/' : '/PedestrianPath/',
   plugins: [react()],
   server: {
     port: 5173,

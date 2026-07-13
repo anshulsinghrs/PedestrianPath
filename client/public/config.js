@@ -27,6 +27,12 @@
 // The GitHub Pages workflow will overwrite this file with the value of
 // the VITE_API_URL secret if one is set, so editing here is optional
 // when you use the standard deploy path.
+// Set apiUrl to your deployed PedestrianPath backend (Render/Railway/VPS),
+// e.g. "https://pedestrianpath-api.onrender.com" — no trailing slash. Leave
+// it empty to build a frontend-only preview (the map + UI load, but API
+// calls — routing, reporting, vision — will fail until a backend is set).
+// The GitHub Pages workflow overwrites this with the VITE_API_URL secret
+// if one is configured, so setting the secret is the recommended path.
 window.__PATHGUARD_CONFIG__ = {
-  apiUrl: "https://pathguard-api-19il.onrender.com",
+  apiUrl: "",
 };
